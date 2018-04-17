@@ -1,0 +1,121 @@
+/*
+ * Base structure
+ */
+.bg-main-sbm {
+  background: #391d59;
+  /* Old Browsers */
+  background: -webkit-linear-gradient(top, #391d59, #21cbff);
+  /*Safari 5.1-6*/
+  background: -o-linear-gradient(top, #391d59, #21cbff);
+  /*Opera 11.1-12*/
+  background: -moz-linear-gradient(top, #391d59, #21cbff);
+  /*Fx 3.6-15*/
+  background: linear-gradient(to bottom, #391d59, #21cbff);
+  /*Standard*/
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#43036E', endColorstr='#008080',GradientType=0 );
+  /* ie6-9 */
+  background-size: 100% 160%; }
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px; }
+
+/*
+ * Typography
+ */
+h1 {
+  margin-bottom: 20px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #eee; }
+
+/*
+ * Sidebar
+ */
+.sidebar {
+  position: fixed;
+  top: 2.6rem;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 2em;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Scrollable contents if viewport is shorter than content. */
+  border-right: 1px solid #eee;
+  background: #391d59;
+  /* Old Browsers */
+  background: -webkit-linear-gradient(top, #391d59, #21cbff);
+  /*Safari 5.1-6*/
+  background: -o-linear-gradient(top, #391d59, #21cbff);
+  /*Opera 11.1-12*/
+  background: -moz-linear-gradient(top, #391d59, #21cbff);
+  /*Fx 3.6-15*/
+  background: linear-gradient(to bottom, #391d59, #21cbff);
+  /*Standard*/
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#43036E', endColorstr='#008080',GradientType=0 );
+  /* ie6-9 */ }
+
+/* Sidebar navigation */
+.sidebar {
+  padding-left: 0;
+  padding-right: 0; }
+
+.sidebar .nav {
+  margin-bottom: 20px; }
+
+.sidebar .nav-item {
+  width: 100%; }
+
+.sidebar .nav-item a {
+  color: white; }
+
+.sidebar .nav-item + .nav-item {
+  margin-left: 0; }
+
+.sidebar .nav-link {
+  border-radius: 0; }
+
+/*
+ * Dashboard
+ */
+/* Placeholders */
+.placeholders {
+  padding-bottom: 3rem; }
+
+.placeholder img {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem; }
+
+/* Heart */
+.fa-heart {
+  color: #f40700; }
+
+.logo-main {
+  width: 7.8125rem;
+  height: 3.125rem; }
+
+.top-margin {
+  margin-top: 2rem; }
+
+button {
+  cursor: pointer; }
+
+.gradient-span {
+  margin: 0 auto;
+  width: 70%; }
+  .gradient-span span {
+    background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0), #037B80, rgba(255, 255, 255, 0));
+    border: none;
+    color: white;
+    display: block;
+    height: 1px;
+    margin-top: 40px; }
+  .gradient-span p {
+    margin: 0 auto;
+    font-size: 50px;
+    line-height: 100px;
+    text-align: center; }
+
+@media screen and (max-width: 62rem) {
+  #footer-remove {
+    visibility: hidden; } }

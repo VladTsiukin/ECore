@@ -1,0 +1,255 @@
+﻿@model IEnumerable<ECore.Domain.Entities.CardsCollection>
+
+@using System.Text;
+
+@{
+    Layout = "_LayoutSite";
+    ViewData["Title"] = "Коллекции";   
+}
+
+<div class="container-fluid m-5">
+    <div class="row">
+        <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active bg-inverse text-center" href="#">Панель управления <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" 
+                         title="Сортировать по дате">
+                    <form class="form-inline m-3" method="post">
+                        <a asp-action="AllCards" asp-route-sort="@ViewBag.Date"
+                           class="btn btn-sm btn-block btn-outline-info mr-4 ml-4"><i class="fa fa-calendar"></i></a>
+                    </form>
+                </li>
+                <li class="nav-item" data-toggle="tooltip" data-placement="right" 
+                         title="Сортировать по названию">
+                    <form class="form-inline m-3" method="post">
+                        <a asp-action="AllCards" asp-route-sort="@ViewBag.Name"
+                           class="btn btn-sm btn-block btn-outline-info mr-4 ml-4"><i class="fa fa-sort-alpha-asc"></i></a>
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <div class="form-inline m-3" data-toggle="tooltip" data-placement="right" 
+                         title="Создать новую коллекцию">
+                        <a data-toggle="modal" data-target="#createModal" style="cursor:pointer"
+                           class="btn btn-sm btn-block btn-outline-info mr-4 ml-4 text-white">
+                            <i class="fa fa-plus-square"></i>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        @* NAVBAR END *@
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+            <h1>Коллекции <i class="badge bg-main-sbm">INFO</i></h1>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-info">
+                        <tr>
+                            <th>#</th>
+                            <th>Имя</th>
+                            <th>Дата создания</th>
+                            <th colspan="12" class="text-center">
+                                Выбирите действие
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="for-alert">
+                        <tr id="for-alert-child"></tr>
+                        @if (Model.Count() == 0)
+                        {
+                            <tr class="custom_centered">
+                                <th scope="row">:(</th>
+                                <td colspan="12">Нет ни одной коллекции...</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            int count = 0;
+
+                            foreach (var collection in Model)
+                            {
+                                count++;
+
+                                var dataForCard = new Dictionary<string, string>
+                                                     {
+                                                        { "key", String.Empty },
+                                                        { "cardsId", collection.Id.ToString() },
+                                                        { "cardsName", collection.Name },
+                                                        { "ifStart", "true" }
+                                                     };
+
+                                <tr class="custom_centered">
+                                    <th scope="row">@count</th>
+                                    <td>@collection.Name</td>
+                                    <td>@collection.DateOfCreation.LocalDateTime.ToShortDateString()</td>
+                                    <td data-toggle="tooltip" data-placement="top" 
+                                        title="Начать треннировку">
+                                        <a class="btn btn-sm btn-outline-success" asp-controller="Card"
+                                           asp-action="Training" asp-all-route-data="dataForCard">
+                                                <i class="fa fa-play-circle"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-info"
+                                           data-toggle="tooltip" data-placement="top"
+                                           title="Добавить слово для обучения"
+                                           asp-action="AddCard" asp-all-route-data="dataForCard">
+                                            <i class="fa fa-plus-circle"></i>
+                                        </a>                                      
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-info" asp-controller="Card"
+                                           data-toggle="tooltip" data-placement="top"
+                                           title="Просмотреть коллекцию"
+                                           asp-action="ListCard" asp-all-route-data="dataForCard">
+                                            <i class="fa fa-list-ol"></i>
+                                        </a>
+                                    </td>
+                                    <td data-toggle="tooltip" data-placement="top"
+                                        title="Удалить коллекцию">
+                                        <button type="button" data-toggle="modal" data-target="#deleteModal"
+                                                data-ajax="true" class="btn btn-sm btn-outline-danger"
+                                                data-id="@collection.Id" data-name="@collection.Name">
+                                            X
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+@* DELETE CARDS COLLECTION *@
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Удалить коллекцию?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" data-toggle="modal" data-target="#deleteModal"
+                        id="deleteCardsbtn" class="btn btn-sm btn-outline-danger">
+                    Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+
+        /// <summary>
+        /// Delete cards collection.
+        /// </summary>
+        (function () {
+
+            let forAlert = document.getElementById('for-alert');
+            let forAlertChild = forAlert.firstChild;
+            let deleteCardsbtn = document.getElementById('deleteCardsbtn');
+            let id, name, tr;
+            // Listener click and attempt delete cards
+            document.addEventListener('click', (event) => {
+
+                if (!event.target.hasAttribute('data-id')) {
+                    return;
+                }
+                else {
+                    try {
+
+                        tr = event.target.parentNode;
+                        id = event.target.getAttribute('data-id');
+                        name = event.target.getAttribute('data-name');
+                    }
+                    catch (e) {
+                        AlertForUser(false);
+                        console.error(e);
+                    }
+                }
+            })
+
+            deleteCardsbtn.addEventListener('click', (event) => {
+                DeleteCards(id, name);
+            });
+
+            // delete cards.
+            function DeleteCards(ID, name) {
+                try {
+
+                    if ((name + '').toLowerCase() == 'default') {
+                       throw new Error('Can not remove the default cards collection');
+                    }
+
+                    let formData = new FormData();
+                    formData.append('id', ID);
+                    formData.append('name', name)
+
+                    let request = new XMLHttpRequest();
+
+                    //if success:
+                    function reqReadyStateChange() {
+                        if (request.readyState == 4 && request.status == 200)
+
+                            AlertForUser(true);
+                    }
+
+                    request.open("POST", window.location.origin + '/Cards/Delete');
+                    request.onreadystatechange = reqReadyStateChange;
+                    request.send(formData);
+
+                } catch (e) {
+                    AlertForUser(false);
+                    console.error(e);
+                }
+            }
+
+            // alert for user
+            function AlertForUser(success) {
+
+                try {
+
+                    let div = document.createElement('tr');
+                    div.className = 'custom_centered';
+
+                    if (success) {
+                        div.innerHTML = '<td colspan="16"><div class="alert alert-info text-center"><strong>Коллекция</strong> удалёна.</div></td>';
+                    } else {
+                        div.innerHTML = '<td colspan="16"><div class="alert alert-danger text-center"><strong>Не удалось удалить коллекцию.</strong></div></td>';
+                    }
+
+                    forAlert.insertBefore(div, forAlertChild);
+
+                    setTimeout(function () {
+                        // remove <tr> and 'alert'
+                        div.parentNode.removeChild(div);
+                        if (success) tr.parentNode.remove();
+
+                    }, 2000);
+
+                } catch (e) {
+                    console.error(e);
+                }
+
+            }
+
+        })();
+
+    </script>
+}
+

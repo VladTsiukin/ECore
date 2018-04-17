@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Contact";
+}
+
+<div class="container sun">
+    <div class="card card-inverse cardM" style="background-color: transparent; border-color: #333;">
+        <img class="card-img-top" src="~/images/feedback-ecore.svg" alt="">
+        <div class="card-block">
+            <h3 class="card-title">Поддержка:</h3>
+            <p class="card-text"></p>
+            <a class="btn btn-block btn-outline-info gmail" href="mailto:vlad.tsukin@gmail.com">
+                <i class="fa fa-envelope-o"></i>
+            </a>
+        </div>
+    </div>
+    <br />
+    <div class="card card-inverse cardM" style="background-color: transparent; border-color: #333;">
+        <div class="card-block">
+            <h3 class="card-title">GitHub:</h3>
+            <p class="card-text"></p>
+            <a class="btn btn-block btn-outline-info" href="https://github.com/VladTsiukin">
+            <i class="fa fa-github"></i></a>
+        </div>
+    </div>
+    <p id="json-fake"></p>
+</div>
+
+<style>
+    .cardM {
+        margin-left: 25%;
+        margin-right: 25%;
+    }
+
+    .gmail {
+        font-size: large;
+    }
+
+    .fa-github {
+        font-size: x-large;
+    }
+</style>
+
+<script type="text/javascript">
+
+    // Media match
+    (function () {
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+
+            try {
+                const mq = window.matchMedia("(min-width: 42rem)");
+
+                if (mq.matches) {
+                    // window width is at least ...
+                    ;
+                } else {
+                    // window width is less than ...
+
+                    let btns = document.querySelectorAll('div.cardM');
+
+                    for (var i = 0; i < btns.length; i++) {
+                        btns[i].classList.remove('cardM');
+                    }
+                }
+            } catch (e) {
+                console.error('ERROR [matchMedia]');
+            }
+
+        });
+
+    })();
+
+</script>

@@ -1,0 +1,190 @@
+﻿@model IEnumerable<ECore.Domain.Entities.AppUser>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutSite.cshtml";
+
+}
+
+
+<div class="top-margin">
+    <h1>Юзеры <span class="badge bg-main-sbm">INFO</span></h1>
+</div>
+
+<div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+<table class="table table-striped table-responsive">
+    <thead class="bg-main-sbm text-white">
+        <tr>
+            <th>#</th>
+            <th colspan="3" class="text-center">ID</th>
+            <th colspan="3" class="text-center">Name</th>
+            <th colspan="3" class="text-center">Email</th>
+            <th class="text-center">
+                <a class="btn btn-sm btn-outline-info" asp-controller="Claims" asp-action="Index">Claims </a>
+            </th>
+            <th class="text-center">
+                <a class="btn btn-sm btn-outline-info" asp-action="CreateUser">Создать</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody id="for-alert">
+        <tr id="for-alert-child"></tr>
+        @if (Model.Count() == 0)
+        {
+            <tr class="custom_centered">
+                <th scope="row">:(</th>
+                <td colspan="3" class="text-center">Нет ни одного пользователя...</td>
+            </tr>
+        }
+        else
+        {
+            long countId = 0;
+
+            foreach (var user in Model)
+            {
+                countId++;
+            <tr class="custom_centered">
+                <th scope="row">@countId</th>
+                <td colspan="3" class="text-center">@user.Id</td>
+                <td colspan="3" class="text-center">@user.UserName</td>
+                <td colspan="3" class="text-center">@user.Email</td>                 
+                <td><a class="btn btn-sm btn-outline-info" 
+                       asp-action="EditUser" asp-route-id="@user.Id">Править</a></td>
+                <td>           
+                <button type="button" data-toggle="modal" data-target="#deleteModal"
+                        data-ajax="true" data-id="@user.Id" data-email="@user.Email"
+                        class="btn btn-sm btn-outline-danger">
+                    Удалить
+                </button>
+                </td>
+            </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<!-- DeleteModal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Удалить юзера?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" data-toggle="modal" data-target="#deleteModal"
+                        class="btn btn-sm btn-outline-danger" id="deleteUserbtn">
+                    Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    /// <summary>
+    /// Delete user.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    (function () {
+
+        let forAlert = document.getElementById('for-alert');
+        let forAlertChild = forAlert.firstChild;
+        let deleteUserbtn = document.getElementById('deleteUserbtn');
+        let id, email, tr;
+        // Listener click and attempt delete user
+        document.addEventListener('click', (event) => {
+
+            if (!event.target.hasAttribute('data-id')) {
+                return;
+            }
+            else {
+                try {
+
+                    tr = event.target.parentNode;
+                    id = event.target.getAttribute('data-id');
+                    email = event.target.getAttribute('data-email');
+                }
+                catch (e) {
+                    AlertForUser(false);
+                    console.error(e);
+                }
+            }
+        })
+
+        deleteUserbtn.addEventListener('click', (event) => {
+            DeleteUser(id, email);
+        });
+
+        // delete user.
+        function DeleteUser(id, email) {
+            try {
+
+                if (email == 'victestvt@yandex.ru') {
+                    throw new Error('Can not remove the admin');
+                }
+
+                let formData = new FormData();
+                formData.append('id', id);
+
+                let request = new XMLHttpRequest();
+
+                //if success:
+                function reqReadyStateChange() {
+                    if (request.readyState == 4 && request.status == 200)
+
+                        AlertForUser(true);
+                }
+
+                request.open("POST", window.location.origin + '/Admin/Delete');
+                request.onreadystatechange = reqReadyStateChange;
+                request.send(formData);
+
+            } catch (e) {
+                AlertForUser(false);
+                console.error(e);
+            }
+        }
+
+        // alert for user
+        function AlertForUser(success) {
+
+            try {
+
+                let div = document.createElement('tr');
+                div.className = 'custom_centered';
+
+                if (success) {
+                    div.innerHTML = '<td colspan="16"><div class="alert alert-info text-center"><strong>Юзер</strong> удалён.</div></td>';
+                } else {
+                    div.innerHTML = '<td colspan="16"><div class="alert alert-danger text-center"><strong>Не удалось удалить юзера.</strong></div></td>';
+                }
+
+                forAlert.insertBefore(div, forAlertChild);
+
+                setTimeout(function () {
+                    // remove <tr> and 'alert'
+                    div.parentNode.removeChild(div);
+                    tr.parentNode.remove();
+
+                }, 2000);
+
+            } catch (e) {
+                console.error(e);
+            }
+           
+        }
+
+    })();
+
+   
+</script>

@@ -1,0 +1,106 @@
+﻿<!doctype html>
+<html lang="ru">
+@* HEAD START. *@
+<head>
+    @model ECore.Web.Models.ViewModels.LoginVM
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>@ViewData["Title"] - ECore.Web</title>
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/landing.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+              asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css"
+              asp-fallback-test-class="fa" asp-fallback-test-property="display" asp-fallback-test-value="inline-block" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+              integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+              crossorigin="anonymous"
+              asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+              asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css"
+              asp-fallback-test-class="fa" asp-fallback-test-property="display" asp-fallback-test-value="inline-block" />
+        <link rel="stylesheet" href="~/css/landing.min.css" asp-append-version="true" />
+    </environment>
+</head>
+@* HEAD END. *@
+
+<body>
+    @* WRAPPER START. *@
+    <div class="site-wrapper">
+        <div class="site-wrapper-inner">
+            <div class="cover-container">
+
+                @* NAV START. *@
+                <div class="masthead clearfix">
+                    <div class="inner">
+                        <a class="masthead-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                            <img class="logo-main" src="~/images/logo-ecore11.svg" alt="ECORE">
+                        </a>
+                        <nav class="nav nav-masthead">
+                            <a class="nav-link" asp-controller="Cards" asp-action="AllCards">Тренировка</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="About">О языке</a>
+                            @await Html.PartialAsync("_LoginPartial")
+                        </nav>
+                    </div>
+                </div>
+
+                @* CONTAINER START. *@
+                <div class="container">
+                    @RenderBody()
+                </div>
+                @* CONTAINER END. *@
+
+                @* FOOTER START. *@
+                <div class="mastfoot">
+                    <div class="inner">
+                        <p>
+                            Сделано с <a asp-controller="Home" asp-action="About">
+                                <i class="fa fa-heart text-danger"></i>
+                            </a>. &copy; @DateTime.Now.Year.ToString() - ECore
+                        </p>
+                    </div>
+                </div>
+                @* FOOTER END. *@
+
+            </div>
+        </div>
+    </div>
+    @* WRAPPER END. *@
+
+    @* SCRIPTS START. *@
+    <environment include="Development">
+        <script src="~/lib/jquery/jquery.min.js"></script>
+        <script src="~/lib/tether/tether.min.js"></script>
+        <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+        <script src="~/js/landing.min.js" asp-append-version="true" async></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+                crossorigin="anonymous"
+                asp-fallback-src="~/lib/jquery/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+                integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+                crossorigin="anonymous"
+                asp-fallback-src="~/lib/tether/tether.min.js">
+        </script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+                integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+                crossorigin="anonymous"
+                asp-fallback-src="~/lib/bootstrap/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+        <script src="~/js/landing.min.js" asp-append-version="true" async></script>
+    </environment>
+    @RenderSection("Scripts", required: false)
+    @* SCRIPTS END. *@
+
+</body>
+</html>

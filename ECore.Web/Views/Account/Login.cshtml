@@ -1,0 +1,100 @@
+﻿@model ECore.Web.Models.ViewModels.LoginVM
+@using System.Security.Claims;
+
+@{
+    ViewBag.Title = "Log In";
+    Layout = "~/Views/Shared/_LayoutLanding.cshtml";
+}
+
+
+<div class="text-danger" asp-validation-summary="All"></div>
+
+
+<div class="inner cover">
+    <p class="lead form-loggroup">
+        <a class="btn btn-lg btn-block btn-outline-info p-2" asp-action="GoogleLogin"
+           asp-route-returnUrl="@ViewBag.returnUrl">
+            Войти с Google <i class="fa fa-google-plus-square"></i>
+        </a>
+    </p>
+    <p class="lead form-loggroup">
+        <a class="btn btn-lg btn-block btn-outline-info p-2" asp-action="FacebookLogin"
+           asp-route-returnUrl="@ViewBag.returnUrl">
+            Войти с Facebook <i class="fa fa-facebook-square"></i>
+        </a>
+    </p>
+    <p class="small"><a href="#" id="admin-link">For Admin</a></p>
+</div>
+
+<div class="form-loggroup invisible" id="admin-form">
+    <form asp-action="Login" asp-controller="Account" method="post">
+        <input type="hidden" name="returnUrl" value="@ViewBag.returnUrl" />
+        <div class="form-group">
+            <label asp-for="Email">Введите Email:</label>
+            <div><span asp-validation-for="Email" class="text-danger"></span></div>
+            <input asp-for="Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Password">Введите пароль:</label>
+            <div><span asp-validation-for="Password" class="text-danger"></span></div>
+            <input asp-for="Password" class="form-control" />
+        </div>
+        <button class="btn btn-lg btn-outline-info btn-block" type="submit">Войти</button>
+    </form>
+</div>
+
+<script type="text/javascript">
+
+    // hidden admin panel
+    (function () {
+
+        try {
+
+            let adminForm = document.getElementById('admin-form');
+            let adminLink = document.getElementById('admin-link');
+
+            adminLink.addEventListener('click', () => {
+
+                document.getElementById('admin-form').classList.toggle('invisible');
+            });
+
+        } catch (e) {
+            console.error(e);
+        }
+
+    })();
+
+
+    // Media match
+    (function () {
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+
+            try {
+                const mq = window.matchMedia("(min-width: 42rem)");
+
+                if (mq.matches) {
+                    // window width is at least ...
+                    ;
+                } else {
+                    // window width is less than ...
+
+                    let btns = document.querySelectorAll('p.form-loggroup');
+
+                    for (var i = 0; i < btns.length; i++) {
+                        btns[i].classList.remove('form-loggroup');
+                    }
+                }
+            } catch (e) {
+                console.error('ERROR [matchMedia]');
+            }
+
+        });
+
+    })();
+
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

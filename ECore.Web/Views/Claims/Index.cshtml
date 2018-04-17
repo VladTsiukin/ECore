@@ -1,0 +1,115 @@
+﻿@using System.Security.Claims;
+@using System.Linq;
+
+@{
+    ViewData["Title"] = "View";
+    Layout = "~/Views/Shared/_LayoutSite.cshtml";
+
+    ClaimsPrincipal currentUser = this.User;
+    string currentUserId = currentUser?.FindFirst(ClaimTypes.NameIdentifier).Value;
+}
+
+@model IEnumerable<System.Security.Claims.Claim>
+
+<div class="top-margin">
+    <h1>Аккаунт <span class="badge bg-main-sbm">INFO</span></h1>
+</div>
+
+@if (User.IsInRole("adminvictestvt"))
+{
+    <table class="table table-sm table-bordered table-responsive">
+        <tr>
+            <th>Subject</th>
+            <th>Issuer</th>
+            <th>Type</th>
+            <th>Value</th>
+        </tr>
+        @if (Model == null || Model.Count() == 0)
+        {
+            <tr><td colspan="4" class="text-center">Объекты 'Claims' отсутствуют.</td></tr>
+        }
+        else
+        {
+            @if (User.IsInRole("adminvictestvt"))
+            {
+                @foreach (var claim in Model.OrderBy(x => x.Type))
+                {
+                    <tr>
+                        <td>@claim.Subject.Name</td>
+                        <td>@claim.Issuer</td>
+                        <td identity-claim-type="@claim.Type"></td>
+                        <td>@claim.Value</td>
+                    </tr>
+                }
+            }
+        }
+    </table>
+}
+else
+{  
+    try
+    {
+
+        var name = User.Identity.Name.ToString();
+        string[] nameClean = name.Split(new string[] { "  " }, StringSplitOptions.RemoveEmptyEntries);
+
+        <table class="table table-sm table-info">
+            <tr>
+                <th>Ваш логин</th>
+                <th>Ваш Email</th>
+                <th>Вы вошли с помощью</th>
+                <th class="text-center" rowspan="2">
+                    <button data-target="#deleteModal" type="button" data-toggle="modal"
+                            class="btn btn-sm btn-outline-danger">
+                        удалить аккаунт
+                    </button>
+                </th>
+            </tr>
+            <tr>
+                <td>@nameClean[0].ToString()</td>
+                <td>@User.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email).Value</td>
+                <td>@User.Claims.FirstOrDefault(e => e.Type == "Provider").Value</td>
+            </tr>
+        </table>
+    }
+    catch (Exception)
+    {
+        <div class="card card-inverse cardM" style="background-color: transparent; border-color: #333;">
+            <div class="card-block">
+                <h3 class="card-title">Извините. Данные сейчас не доступны.</h3>
+            </div>
+        </div>
+    }
+}
+
+<!-- DeleteModal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">ВЫ УВЕРЕНЫ, ЧТО ХОТИТЕ УДАЛИТЬ АККАУНТ?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-outline-success" data-dismiss="modal">
+                    НЕТ
+                </button>
+                <form asp-controller="Admin" asp-action="DeleteUser" method="post">
+                    <input type="hidden" name="id" value="@currentUserId" />
+                    <button type="submit" data-toggle="modal" data-target="#deleteModal"
+                            class="btn btn-sm btn-outline-danger" id="deleteUserbtn">
+                        да
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

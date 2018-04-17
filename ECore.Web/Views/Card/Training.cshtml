@@ -1,0 +1,270 @@
+﻿@using ECore.Domain.Entities;
+
+@model Card
+
+@{
+    ViewData["Title"] = "Training";
+    Layout = "~/Views/Shared/_LayoutSite.cshtml";
+}
+
+
+@if (ViewData["checkIfStart"] == null)
+{
+    <div id="idKey" hidden>@ViewData["key"]</div>
+    /* FACE */
+    <div class="jumbotron jumbotron-fluid mt-5">
+        <div class="container">
+            <p class="display-3 text-center" id="zoomecoreQ">@Model.Item.Face</p>
+        </div>
+    </div>
+    /* BACK */
+    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <p class="display-3 text-center" id="zoomecoreA">@Model.Item.Back</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="card">
+            <div class="card-header d-flex justify-content-end" role="tab" id="headingOne">
+                <div class="mr-auto">
+                    <button type="button" class="btn btn-info m-3 mr-0" data-toggle="collapse"
+                            data-parent="#accordion" href="#collapseOne" id="btnCollapseOne"
+                            aria-expanded="true" aria-controls="collapseOne" data-id="@Model.Id">
+                        <i class="fa fa-refresh"></i> Показать
+                    </button>
+                    @*  BUTTONS FOR USER SCORE  *@
+                    <div class="d-inline-block text-left">
+                        <a data-score="bad"
+                           data-toggle="tooltip" data-placement="top" title="Совсем печаль"
+                           class="btn btn-outline-danger disabled" role="button" aria-disabled="true">
+                            <i data-score="bad" class="fa fa-thumbs-o-down"></i>
+                        </a>
+                        <a data-score="almost"
+                           data-toggle="tooltip" data-placement="top" title="Так себе"
+                           class="btn btn-outline-info disabled" role="button" aria-disabled="true">
+                            <i data-score="almost" class="fa fa-handshake-o"></i>
+                        </a>
+                        <a data-score="nice"
+                           data-toggle="tooltip" data-placement="top" title="Отлично"
+                           class="btn btn-outline-success disabled" role="button" aria-disabled="true">
+                            <i data-score="nice" class="fa fa-thumbs-o-up"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="mt-3 d-inline-block">
+                    <a class="btn btn-outline-info btnspeech m-1">
+                        <i class="fa fa-microphone btnspeech"></i>
+                    </a>
+                    <a class="btn btn-outline-secondary m-1" id="btnplus">
+                        <i class="fa fa-plus-circle"></i>
+                    </a>
+                    <a class="btn btn-outline-secondary m-1" id="btnminus">
+                        <i class="fa fa-minus-circle"></i>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <p id="timeNow" class="alert-success">Время:</p>
+
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script type="text/javascript">
+
+    // increase and reduce font cards.
+    (function () {
+
+        try {
+
+            let zQ = document.getElementById('zoomecoreQ');
+            let zA = document.getElementById('zoomecoreA');
+            let btnplus = document.getElementById('btnplus');
+            let btnminus = document.getElementById('btnminus');
+
+
+            if (localStorage.getItem('remForUser') === null) {
+                zQ.style.fontSize = '2rem';
+                zA.style.fontSize = '2rem';
+
+            } else {
+
+                zQ.style.fontSize = localStorage.getItem('remForUser');
+                zA.style.fontSize = localStorage.getItem('remForUser');
+            }
+
+
+
+            btnplus.addEventListener('click', (event) => {
+                let font = parseFloat(zQ.style.fontSize);
+                zQ.style.fontSize = (font + 0.5) + 'rem';
+                zA.style.fontSize = (font + 0.5) + 'rem';
+                localStorage.setItem('remForUser', (font + 0.5) + 'rem');
+            });
+
+            btnminus.addEventListener('click', (event) => {
+                let font = parseFloat(zQ.style.fontSize);
+                zQ.style.fontSize = (font - 0.5) + 'rem';
+                zA.style.fontSize = (font - 0.5) + 'rem';
+                localStorage.setItem('remForUser', (font + 0.5) + 'rem');
+            });
+
+        } catch (e) {
+            console.error('FONT INCREASE-REDUCE FAIL');
+        }
+    })();
+
+
+    (function () {
+
+
+        try {
+
+            let btnspeech = document.querySelector('.btnspeech');
+
+            if ('speechSynthesis' in window) {
+                // all good
+            } else {
+                btnspeech.classList.add('invisible');
+                return;
+            }
+
+            // for speech
+            let zQ = document.getElementById('zoomecoreQ');
+            let synth = window.speechSynthesis;
+            let voices = window.speechSynthesis.getVoices();
+
+
+            // speech function:
+            function speak() {
+                var utterThis = new SpeechSynthesisUtterance(zQ);
+                utterThis.text = zQ.textContent;
+                utterThis.rate = 1;
+                utterThis.pitch = 0;
+                synth.speak(utterThis);
+            }
+
+            btnspeech.addEventListener('click', (event) => {
+                event.preventDefault();
+                speak();
+
+            });
+        } catch (e) {
+            console.error(e);
+        }
+
+
+
+    })();
+
+    // user score process:
+    (function () {
+
+        let btnCollapseOne = document.getElementById('btnCollapseOne');
+        let timerId = undefined;
+        let timerTime = 0;
+        let id, key;
+        let timeNow = document.getElementById('timeNow');
+        let divKey = document.getElementById('idKey');
+        key = divKey.textContent;
+
+        // timer
+        document.addEventListener('DOMContentLoaded', (event) => {
+
+            id = btnCollapseOne.getAttribute('data-id');
+
+            if (timerId == undefined) {
+                timerId = setInterval(() => {
+                    //let time = new Date().toLocaleTimeString('en-US', { hour12: false });
+                    timeNow.innerText = 'Время: ' + timerTime + ' сек';
+                    ++timerTime;
+                }, 1000);
+            }
+
+        });
+
+        document.addEventListener('click', (event) => {
+
+            if (!event.target.hasAttribute('data-score')) return;
+
+            let dataScore = event.target.getAttribute('data-score');
+            let score;
+            let idCard = id;
+
+            switch (dataScore) {
+                case 'bad':
+                    score = 0;
+                    SendAnswerData(score, idCard, key);
+                    clearInterval(timerId);
+                    break;
+                case 'almost':
+                    if (timerTime <= 5) {
+                        score = 3;
+                    } else if (timerTime > 5 && timerTime < 10) {
+                        score = 2;
+                    } else {
+                        score = 1
+                    }
+
+                    SendAnswerData(score, idCard, key);
+                    clearInterval(timerId);
+                    break;
+                default:
+                    if (timerTime <= 6) {
+                        score = 5;
+                    } else {
+                        score = 4;
+                    }
+
+                    SendAnswerData(score, idCard, key);
+                    clearInterval(timerId);
+                    break;
+            }
+
+        });
+
+        // send data for server (user score and card id)
+        function SendAnswerData(score, idCard, key) {
+
+            try {
+
+                let formData = new FormData();
+                formData.append('idCard', idCard);
+                formData.append('score', score);
+                formData.append('keyQ', key);
+
+                let request = new XMLHttpRequest();
+                let result;
+
+                //if success:
+                function reqReadyStateChange() {
+                    if (request.readyState == 4 && request.status == 200)
+                        console.log('SUCCESS SEND SCORE DATA FOR USER');
+                    window.location = request.responseURL;
+                }
+
+                function errorRequest() {
+                    console.log('FAIL SEND SCORE DATA FOR USER');
+                }
+
+                request.open("POST", window.location.origin + '/Card/ProcessingUserAnswer');
+                request.onreadystatechange = reqReadyStateChange;
+                request.onerror = errorRequest;
+                request.send(formData);
+
+            } catch (e) {
+                console.log('SUCCESS SEND SCORE DATA FOR USER');
+                window.location.reload;
+            }
+        }
+
+    })();
+
+</script>

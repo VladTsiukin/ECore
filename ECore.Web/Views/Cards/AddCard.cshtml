@@ -1,0 +1,52 @@
+﻿@model ECore.Web.Models.ViewModels.CardVM
+
+@{
+    ViewData["Title"] = "AddCard";
+    Layout = "~/Views/Shared/_LayoutSite.cshtml";
+}
+
+<div class="top-margin">
+    <h1>Вопрос-ответ <span class="badge bg-main-sbm">СОЗДАТЬ</span></h1>
+</div>
+
+<form asp-action="AddCard" method="post">
+    <div asp-validation-summary=" All" class="text-danger"></div>
+    <input type="hidden" name="idCards" value="@ViewData["cardsId"]" />
+    <div class="form-group">
+        <label asp-for="Item.Face">Введите вопрос:</label>
+        <input asp-for="Item.Face" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Item.Back">Введите ответ:</label>
+        <input asp-for="Item.Back" class="form-control" />
+    </div>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card card-inverse card-info">
+                    <div class="card-block">
+                        <h3 class="card-title">Дата создания:</h3>
+                        <p class="btn bg-inverse text-white text-uppercase">
+                        @DateTimeOffset.Now.ToLocalTime().Date.ToLongDateString()</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card card-inverse card-info">
+                    <div class="card-block">
+                        <h3 class="card-title">Название коллекции:</h3>
+                        <p class="btn bg-inverse text-white text-uppercase">@ViewData["cardsName"]</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-outline-info">Создать</button>
+    <a asp-action="AllCards" class="btn btn-outline-secondary">Отмена</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+

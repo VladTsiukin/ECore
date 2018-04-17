@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ECore.Domain.Entities.Card>
+
+@using System.Text;
+
+@{
+    Layout = "_LayoutSite";
+    ViewData["Title"] = "ListCard";
+
+}
+
+<div class="container-fluid m-5">
+    <div class="row">
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+            <h1>Вопросы-ответы <i class="badge bg-main-sbm">INFO</i></h1>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead class="table-info">
+                        <tr>
+                            <th>#</th>
+                            <th>Вопрос</th>
+                            <th>Ответ</th>
+                            <th>Время повторения</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="for-alert">
+                        <tr id="for-alert-child"></tr>
+                        @if (Model.Count() == 0)
+                        {
+                            <tr>
+                                <th>:(</th>
+                                <td>Нет ни одного вопроса-ответа...</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            int count = 0;
+
+                            foreach (var card in Model)
+                            {
+                                count++;
+
+                                var dataForCard = new Dictionary<string, string>
+                                {
+                                    {"id", card.Id.ToString() },
+                                    {"cardsId", card.CardsId.ToString() }
+                                };
+
+                            <tr>
+                                <th>@count</th>
+                                <td>@card.Item.Face</td>
+                                <td>@card.Item.Back</td>
+                                <td>@card.DtoInterval.LocalDateTime.ToString()</td>
+                                <td>
+                                    <a class="btn btn-sm btn-outline-info"
+                                       asp-action="EditCard" asp-all-route-data="dataForCard">
+                                        Править
+                                    </a>
+                                </td>
+                            </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
