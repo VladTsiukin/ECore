@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECore.Domain", "ECore.Domai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECore.Service", "ECore.Service\ECore.Service.csproj", "{2543E2A2-2E1A-4AB7-B74D-DA24039C3A71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECore.Test", "ECore.Test\ECore.Test.csproj", "{CDE2F76C-2DB4-4288-9786-A84B20AF8B36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECore.Test", "ECore.Test\ECore.Test.csproj", "{CDE2F76C-2DB4-4288-9786-A84B20AF8B36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
